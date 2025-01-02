@@ -3,3 +3,4 @@ Cargo.lock
 *.py
 .vscode
 /datasets
+rustc-ice-*

@@ -93,7 +93,7 @@ macro_rules! slice_shape {
             }
         }
 
-        impl<$($range: RangeBounds<usize>),*> SliceShape<($($range,)*)> for [usize; {length!($($range)*)}]
+        impl<$($range: RangeBounds<usize> + 'static),*> SliceShape<($($range,)*)> for [usize; {length!($($range)*)}]
         where
             $(usize: SliceDim<$range>),*
         {
@@ -111,6 +111,21 @@ macro_rules! slice_shape {
     }
 }
 
+// impl<R1: RangeBounds<usize> + 'static> SliceShape<(R1,)> for [usize; length!(R1)]
+// where
+//     usize: SliceDim<R1>,
+// {
+//     type Sliced = (<usize as SliceDim<R1>>::Sliced,);
+
+//     fn slice(&self, range: &(R1,)) -> Option<Self::Sliced> {
+//         Some((self[0].slice(&range.0)?,))
+//     }
+
+//     fn first_idx_in_slice(&self, range: &(R1,)) -> usize {
+//         let strides = self.strides();
+//         get_start_bound(range.0.start_bound()) * strides[0] + 0
+//     }
+// }
 slice_shape!([D1][R1][0]);
 slice_shape!([D1 D2] [R1 R2] [0 1]);
 slice_shape!([D1 D2 D3] [R1 R2 R3] [0 1 2]);
